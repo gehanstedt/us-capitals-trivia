@@ -38,7 +38,7 @@ body {
 }
 
 #welcome {
-    display: none;
+    display: block;
 }
 
 #mainTrivia {
@@ -54,7 +54,7 @@ body {
 }
 
 #highScores {
-    display: block;
+    display: none;
 }
 
 .highScoreList {
