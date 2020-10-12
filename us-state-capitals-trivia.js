@@ -1,10 +1,11 @@
 const penaltyTime = 10;
 const targetNumberOfQuestionsString = "seven";
 var targetNumberOfQuestions = 7;
-var startingAmountOfTime = 30;
+var startingAmountOfTime = 60;
 
 var quizTimerInterval;
 var secondsElapsed;
+var timeRemaining;
 var modeCounting;
 
 var questionArray = [];
@@ -121,7 +122,7 @@ function showQuestion () {
 }
 
 function updateMessage () {
-  spanPenaltyLength.textContent = penaltyTime * -1;
+  spanPenaltyLength.textContent = penaltyTime;
   spanNumberQuestions.textContent = targetNumberOfQuestionsString;
   totalSecondsID.textContent = startingAmountOfTime;
   timeID.textContent = startingAmountOfTime;
@@ -141,9 +142,9 @@ function startTimer () {
   if (!modeCounting) {
     quizTimerInterval = setInterval (function () {
       secondsElapsed++;
-      var secondsRemaining = startingAmountOfTime - secondsElapsed;
+      timeRemaining = startingAmountOfTime - secondsElapsed;
 
-      timeID.textContent = secondsRemaining;
+      timeID.textContent = timeRemaining;
 
       if (secondsRemaining <= 0) {
         clearInterval (quizTimerInterval);
