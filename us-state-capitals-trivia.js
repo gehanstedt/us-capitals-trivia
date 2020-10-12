@@ -146,7 +146,7 @@ function startTimer () {
 
       timeID.textContent = timeRemaining;
 
-      if (secondsRemaining <= 0) {
+      if (timeRemaining <= 0) {
         clearInterval (quizTimerInterval);
         showSection ("resultsLoser");
       }
