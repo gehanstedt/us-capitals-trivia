@@ -1,7 +1,11 @@
-const penaltyTime = -10;
+const penaltyTime = 10;
 const targetNumberOfQuestionsString = "seven";
 var targetNumberOfQuestions = 7;
 var startingAmountOfTime = 30;
+
+var quizTimerInterval;
+var secondsElapsed;
+var modeCounting;
 
 var questionArray = [];
 var buttonBegin = document.querySelector("#buttonBegin");
@@ -19,7 +23,11 @@ var ulAnswerList = document.querySelector(".answerList");
 var questionText = document.querySelector("#questionText");
 var answerStatusArea = document.querySelector("#answerStatusArea");
 var answerStatus = document.querySelector("#answerStatus");
+var timeID = document.querySelector("#time");
+var totalSecondsID = document.querySelector("#totalSeconds");
+var penaltyTimeID = document.querySelector("#penaltyTime");
 var showCorrectAnswerTimerInterval;
+var showPenaltyTimerInterval;
 
 
 var currentCorrectAnswer;
@@ -115,12 +123,36 @@ function showQuestion () {
 function updateMessage () {
   spanPenaltyLength.textContent = penaltyTime * -1;
   spanNumberQuestions.textContent = targetNumberOfQuestionsString;
+  totalSecondsID.textContent = startingAmountOfTime;
+  timeID.textContent = startingAmountOfTime;
+  penaltyTimeID.textContent = penaltyTime;
 }
 
 function beginQuiz () {
   showSection ("mainTrivia");
   randomQuestionSelection = buildRandomArray (targetNumberOfQuestions, 0, questionArray.length - 1);
   showQuestion ();
+  secondsElapsed = 0;
+  modeCounting = false;
+  startTimer ();
+}
+
+function startTimer () {
+  if (!modeCounting) {
+    quizTimerInterval = setInterval (function () {
+      secondsElapsed++;
+      var secondsRemaining = startingAmountOfTime - secondsElapsed;
+
+      timeID.textContent = secondsRemaining;
+
+      if (secondsRemaining <= 0) {
+        clearInterval (quizTimerInterval);
+        showSection ("resultsLoser");
+      }
+    }, 1000)
+  }
+
+  modeCounting = true;
 }
 
 function showTimer (showIt) {
@@ -133,6 +165,16 @@ function showTimer (showIt) {
   }
 }
 
+function showPenaltyBar (showIt) {
+  if (showIt) {
+    penaltyBar.setAttribute("style", "visibility: visible");
+  }
+
+  else {
+    penaltyBar.setAttribute("style", "visibility: hidden");
+  }
+}
+
 function showAnswerStatusArea (showIt) {
   if (showIt) {
     answerStatusArea.setAttribute("style", "visibility: visible");
@@ -142,7 +184,6 @@ function showAnswerStatusArea (showIt) {
     answerStatusArea.setAttribute("style", "visibility: hidden");
   }
 }
-
 
 
 function showSection (sectionToShow) {
@@ -187,11 +228,18 @@ ulAnswerList.addEventListener("click", function(event) {
   event.preventDefault();
   if(event.target.matches("button")) {
     if (event.target.value === currentCorrectAnswer) {
-      answerStatus.textContent = "Correct!"      
+      answerStatus.textContent = "Correct!";      
     }
 
     else {
-      answerStatus.textContent = "Wrong!"      
+      answerStatus.textContent = "Wrong!";
+      showPenaltyBar (true);
+      secondsElapsed += penaltyTime;
+
+      showPenaltyTimerInterval = setInterval (function () {
+        clearInterval (showPenaltyTimerInterval);
+        showPenaltyBar (false);
+      }, 750);
     }
 
     showAnswerStatusArea (true);
@@ -215,6 +263,7 @@ loadQuestionArray ();
 showSection ("welcome");
 updateMessage ();
 showAnswerStatusArea (false);
+modeCounting = false;
 
 buttonBegin.addEventListener("click", beginQuiz);
 
