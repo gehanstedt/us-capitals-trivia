@@ -27,6 +27,8 @@ var answerStatus = document.querySelector("#answerStatus");
 var timeID = document.querySelector("#time");
 var totalSecondsID = document.querySelector("#totalSeconds");
 var penaltyTimeID = document.querySelector("#penaltyTime");
+var myScoreHeading = document.querySelector(".myScoreHeading");
+var myScoreBody = document.querySelector(".myScoreBody");
 var showCorrectAnswerTimerInterval;
 var showPenaltyTimerInterval;
 
@@ -52,8 +54,6 @@ function buildRandomArray (numberOfElements, minimumValue, maximumValue) {
 
   return randomArray;
 }
-
-
 
 function clearLastQuestion () {
   while (ulAnswerList.hasChildNodes ()) {
@@ -258,6 +258,8 @@ ulAnswerList.addEventListener("click", function(event) {
   else {
     clearInterval (quizTimerInterval);
     showSection ("resultsWinner");
+    myScoreHeading.textContent = secondsRemaining;
+    myScoreBody.textContent = secondsRemaining;
   }
 });
 
