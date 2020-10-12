@@ -1,6 +1,6 @@
 const penaltyTime = -10;
-const targetNumberOfQuestions = 7;
-const targetNumberOfQuestionsString = "seven"
+const targetNumberOfQuestionsString = "seven";
+var targetNumberOfQuestions = 7;
 
 var questionArray = [];
 var buttonBegin = document.querySelector("#buttonBegin");
@@ -13,7 +13,95 @@ var spanNumberQuestions = document.querySelector("#numberQuestions");
 var spanPenaltyLength = document.querySelector("#penaltyLength");
 var headerBar1 = document.querySelector(".headerBar1");
 var headerBar2 = document.querySelector(".headerBar2");
+var timerBar = document.querySelector("#timerBar");
+var ulAnswerList = document.querySelector(".answerList");
+var questionText = document.querySelector("#questionText");
 
+var currentCorrectAnswer;
+var randomQuestionSelection = [];
+var questionNumber = 0;
+
+function buildRandomArray (numberOfElements, minimumValue, maximumValue) {
+  var fullArray = [];
+  var randomArray = [];
+  var count;
+  var randomNumber;
+  
+  for (count = minimumValue; count <= maximumValue; count++) {
+    fullArray.push (count);
+  }
+
+  for (count = 0; count < numberOfElements; count ++) {
+    randomNumber = Math.floor (Math.random() * fullArray.length);
+    randomArray.push (fullArray.splice (randomNumber, 1));
+  }
+
+  return randomArray;
+}
+
+function clearLastQuestion () {
+  while (ulAnswerList.hasChildNodes ()) {
+    ulAnswerList.removeChild(ulAnswerList.childNodes[0]);           // Remove <ul>'s first child node (index 0)
+  }
+}
+
+function showQuestion () {
+  var questionString;
+  var questionPosition = randomQuestionSelection.splice (0, 1)[0];
+  var randomAnswerArray = buildRandomArray (4, 0, 3);
+  var answerLetter = 'a';
+  var answerLineString;
+  var answerString;
+  var liElement;
+  var buttonElement;
+
+  console.log ("Question position: " + questionPosition);
+
+  questionNumber++;
+  questionString = "Q" + questionNumber + ": What is the capital of " + questionArray [questionPosition].state + "?";
+  questionText.textContent = questionString;
+  currentCorrectAnswer = questionArray[questionPosition].answer;
+
+  // Display possible answers
+  for (var count = 0; count < 4; count++) {
+    numericAnswerToDisplay = randomAnswerArray [count][0];
+
+    switch (numericAnswerToDisplay) {
+      case 0:
+        answerString = questionArray[questionPosition].answer;
+        break;
+      
+      case 1:
+        answerString = questionArray[questionPosition].wrong0;
+        break;
+
+      case 2:
+        answerString = questionArray[questionPosition].wrong1;
+        break;
+  
+      case 3:
+        answerString = questionArray[questionPosition].wrong2;
+        break;
+    }
+
+    console.log (answerString);
+
+    answerLineString = answerLetter + ". " + answerString;
+    liElement = document.createElement("li");
+    liElement.setAttribute ("class", "answerListItem");
+    ulAnswerList.appendChild (liElement);
+  
+    buttonElement = document.createElement ("button");
+    buttonElement.setAttribute ("class", "btn btn-primary answerButton");
+    buttonElement.setAttribute ("value", answerString);
+    buttonElement.textContent = answerLineString;
+    liElement.appendChild (buttonElement);
+
+    answerLetter = String.fromCharCode(answerLetter.charCodeAt(0) + 1); 
+  }
+
+  console.log (randomAnswerArray);
+}
 
 function updateMessage () {
   spanPenaltyLength.textContent = penaltyTime * -1;
@@ -22,7 +110,19 @@ function updateMessage () {
 
 function beginQuiz () {
   showSection ("mainTrivia");
-  alert ("Quiz begins");
+  randomQuestionSelection = buildRandomArray (targetNumberOfQuestions, 0, questionArray.length - 1);
+  clearLastQuestion ();
+  showQuestion ();
+}
+
+function showTimer (showIt) {
+  if (showIt) {
+    timerBar.setAttribute("style", "visibility: visible");
+  }
+
+  else {
+    timerBar.setAttribute("style", "visibility: hidden");
+  }
 }
 
 function showSection (sectionToShow) {
@@ -34,16 +134,18 @@ function showSection (sectionToShow) {
   headerBar1.setAttribute("style", "display: none");
   headerBar2.setAttribute("style", "display: none");
   
-
   switch (sectionToShow) {
     case "welcome":
+      headerBar1.setAttribute("style", "display: block");
       sectionWelcome.setAttribute("style", "display: block");
+      showTimer (false);
       break;
 
     case "mainTrivia":
-      sectionWelcome.setAttribute("style", "display: block");
+      sectionMainTrivia.setAttribute("style", "display: block");
       headerBar1.setAttribute("style", "display: block");
       headerBar2.setAttribute("style", "display: block");
+      showTimer (true);
       break;
 
       case "resultsWinner":
