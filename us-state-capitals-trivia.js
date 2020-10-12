@@ -1,6 +1,7 @@
 const penaltyTime = -10;
 const targetNumberOfQuestionsString = "seven";
 var targetNumberOfQuestions = 7;
+var startingAmountOfTime = 30;
 
 var questionArray = [];
 var buttonBegin = document.querySelector("#buttonBegin");
@@ -16,6 +17,10 @@ var headerBar2 = document.querySelector(".headerBar2");
 var timerBar = document.querySelector("#timerBar");
 var ulAnswerList = document.querySelector(".answerList");
 var questionText = document.querySelector("#questionText");
+var answerStatusArea = document.querySelector("#answerStatusArea");
+var answerStatus = document.querySelector("#answerStatus");
+var showCorrectAnswerTimerInterval;
+
 
 var currentCorrectAnswer;
 var randomQuestionSelection = [];
@@ -39,6 +44,8 @@ function buildRandomArray (numberOfElements, minimumValue, maximumValue) {
   return randomArray;
 }
 
+
+
 function clearLastQuestion () {
   while (ulAnswerList.hasChildNodes ()) {
     ulAnswerList.removeChild(ulAnswerList.childNodes[0]);           // Remove <ul>'s first child node (index 0)
@@ -56,6 +63,7 @@ function showQuestion () {
   var buttonElement;
 
   console.log ("Question position: " + questionPosition);
+  clearLastQuestion ();
 
   questionNumber++;
   questionString = "Q" + questionNumber + ": What is the capital of " + questionArray [questionPosition].state + "?";
@@ -94,6 +102,7 @@ function showQuestion () {
     buttonElement = document.createElement ("button");
     buttonElement.setAttribute ("class", "btn btn-primary answerButton");
     buttonElement.setAttribute ("value", answerString);
+    buttonElement.setAttribute ("id", "answerButton");
     buttonElement.textContent = answerLineString;
     liElement.appendChild (buttonElement);
 
@@ -111,7 +120,6 @@ function updateMessage () {
 function beginQuiz () {
   showSection ("mainTrivia");
   randomQuestionSelection = buildRandomArray (targetNumberOfQuestions, 0, questionArray.length - 1);
-  clearLastQuestion ();
   showQuestion ();
 }
 
@@ -124,6 +132,18 @@ function showTimer (showIt) {
     timerBar.setAttribute("style", "visibility: hidden");
   }
 }
+
+function showAnswerStatusArea (showIt) {
+  if (showIt) {
+    answerStatusArea.setAttribute("style", "visibility: visible");
+  }
+
+  else {
+    answerStatusArea.setAttribute("style", "visibility: hidden");
+  }
+}
+
+
 
 function showSection (sectionToShow) {
   sectionWelcome.setAttribute("style", "display: none");
@@ -160,12 +180,41 @@ function showSection (sectionToShow) {
       sectionHighScores.setAttribute("style", "display: block");
       break;
   }
-
 }
+
+// Handle when answer is clicked
+ulAnswerList.addEventListener("click", function(event) {
+  event.preventDefault();
+  if(event.target.matches("button")) {
+    if (event.target.value === currentCorrectAnswer) {
+      answerStatus.textContent = "Correct!"      
+    }
+
+    else {
+      answerStatus.textContent = "Wrong!"      
+    }
+
+    showAnswerStatusArea (true);
+
+    showCorrectAnswerTimerInterval = setInterval (function () {
+      clearInterval (showCorrectAnswerTimerInterval);
+      showAnswerStatusArea (false);
+    }, 750)
+  }
+
+  if (questionNumber < targetNumberOfQuestions) {
+    showQuestion ();  
+  }
+
+  else {
+    showSection ("resultsWinner");
+  }
+});
 
 loadQuestionArray ();
 showSection ("welcome");
 updateMessage ();
+showAnswerStatusArea (false);
 
 buttonBegin.addEventListener("click", beginQuiz);
 
