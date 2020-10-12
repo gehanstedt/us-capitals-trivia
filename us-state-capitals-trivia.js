@@ -5,7 +5,7 @@ var startingAmountOfTime = 60;
 
 var quizTimerInterval;
 var secondsElapsed;
-var timeRemaining;
+var secondsRemaining;
 var modeCounting;
 
 var questionArray = [];
@@ -142,11 +142,11 @@ function startTimer () {
   if (!modeCounting) {
     quizTimerInterval = setInterval (function () {
       secondsElapsed++;
-      timeRemaining = startingAmountOfTime - secondsElapsed;
+      secondsRemaining = startingAmountOfTime - secondsElapsed;
 
-      timeID.textContent = timeRemaining;
+      timeID.textContent = secondsRemaining;
 
-      if (timeRemaining <= 0) {
+      if (secondsRemaining <= 0) {
         clearInterval (quizTimerInterval);
         showSection ("resultsLoser");
       }
@@ -256,6 +256,7 @@ ulAnswerList.addEventListener("click", function(event) {
   }
 
   else {
+    clearInterval (quizTimerInterval);
     showSection ("resultsWinner");
   }
 });
