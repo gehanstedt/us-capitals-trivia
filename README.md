@@ -16,3 +16,7 @@ Welcome to US State Capitals Trivia.  This has the following features:
 
 Special thanks to Georgia Tech, Trilogy Educaton and John McSwain for the great class thus far.  Thanks Cynthia for the grammar help!  ;-)
 
+Sample images:
+![welcome-screen]https://github.com/gehanstedt/us-state-capitals-trivia/blob/main/images/welcome.jpg
+![question]https://github.com/gehanstedt/us-state-capitals-trivia/blob/main/images/question.jpg
+![highscores]https://github.com/gehanstedt/us-state-capitals-trivia/blob/main/images/highscores.jpg
