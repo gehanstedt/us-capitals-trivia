@@ -15,6 +15,7 @@ var buttonBegin = document.querySelector("#buttonBegin");
 var buttonGoBack1 = document.querySelector("#goBack1");
 var buttonGoBack2 = document.querySelector("#goBack2");
 var buttonHighScoreSubmit = document.querySelector("#highScoreSubmit");
+var buttonviewHighScores = document.querySelector("#viewHighScores");
 var aHighScoreClick = document.querySelector("#highScoreClick");
 var inputWinnersName = document.querySelector("#winnersName");
 var sectionWelcome = document.querySelector("#welcome");
@@ -262,6 +263,9 @@ aHighScoreClick.addEventListener("click", function(event) {
   showSection ("highScores");
 });
 
+function showHighScores () {
+  showSection ("highScores");
+}
 
 // Handle when answer is clicked
 ulAnswerList.addEventListener("click", function(event) {
@@ -407,6 +411,7 @@ buttonBegin.addEventListener("click", beginQuiz);
 buttonHighScoreSubmit.addEventListener("click", addHighScore);
 buttonGoBack1.addEventListener("click", resetGame);
 buttonGoBack2.addEventListener("click", resetGame);
+buttonviewHighScores.addEventListener("click", showHighScores);
 
 function loadQuestionArray () {
   questionArray = [
