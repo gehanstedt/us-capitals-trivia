@@ -1,8 +1,9 @@
 const penaltyTime = 10;
 const targetNumberOfQuestionsString = "seven";
 const defaultTargetNumberOfQuestions = 7;
+const defaultStartingAmountofTime = 60;
 var targetNumberOfQuestions;
-var startingAmountOfTime = 60;
+var startingAmountOfTime = defaultTargetNumberOfQuestions;
 
 var quizTimerInterval;
 var secondsElapsed;
