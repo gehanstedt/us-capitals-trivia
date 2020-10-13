@@ -14,6 +14,7 @@ var buttonBegin = document.querySelector("#buttonBegin");
 var buttonGoBack1 = document.querySelector("#goBack1");
 var buttonGoBack2 = document.querySelector("#goBack2");
 var buttonHighScoreSubmit = document.querySelector("#highScoreSubmit");
+var aHighScoreClick = document.querySelector("#highScoreClick");
 var inputWinnersName = document.querySelector("#winnersName");
 var sectionWelcome = document.querySelector("#welcome");
 var sectionMainTrivia = document.querySelector("#mainTrivia");
@@ -26,6 +27,7 @@ var headerBar1 = document.querySelector(".headerBar1");
 var headerBar2 = document.querySelector(".headerBar2");
 var timerBar = document.querySelector("#timerBar");
 var ulAnswerList = document.querySelector(".answerList");
+var ulHighScoreList = document.querySelector(".highScoreList");
 var questionText = document.querySelector("#questionText");
 var answerStatusArea = document.querySelector("#answerStatusArea");
 var answerStatus = document.querySelector("#answerStatus");
@@ -61,11 +63,34 @@ function buildRandomArray (numberOfElements, minimumValue, maximumValue) {
   return randomArray;
 }
 
-function clearLastQuestion () {
-  while (ulAnswerList.hasChildNodes ()) {
-    ulAnswerList.removeChild(ulAnswerList.childNodes[0]);           // Remove <ul>'s first child node (index 0)
+function clearUlDisplay (myUl) {
+  while (myUl.hasChildNodes ()) {
+    myUl.removeChild(myUl.childNodes[0]);           // Remove <ul>'s first child node (index 0)
   }
 }
+
+function displayHighScoreList () {
+  clearUlDisplay (ulHighScoreList);
+  var count = 0;
+  var liElement;
+  var highScoreString;
+
+  while (count < highScoreArray.length) {
+    highScoreString = highScoreArray [count].score + " - " + highScoreArray [count].winnersName;
+    liElement = document.createElement("li");
+    liElement.textContent = highScoreString;
+    ulHighScoreList.appendChild (liElement);
+    count ++;
+  }
+}
+
+/*
+function clearHighScoreDispaly () {
+  while (ulHighScoreList.hasChildNodes ()) {
+    ulHighScoreList.removeChild(ulAnswerList.childNodes[0]);           // Remove <ul>'s first child node (index 0)
+  }
+}
+*/
 
 function showQuestion () {
   var questionString;
@@ -78,7 +103,7 @@ function showQuestion () {
   var buttonElement;
 
   console.log ("Question position: " + questionPosition);
-  clearLastQuestion ();
+  clearUlDisplay (ulAnswerList);
 
   questionNumber++;
   questionString = "Q" + questionNumber + ": What is the capital of " + questionArray [questionPosition].state + "?";
@@ -192,7 +217,6 @@ function showAnswerStatusArea (showIt) {
   }
 }
 
-
 function showSection (sectionToShow) {
   sectionWelcome.setAttribute("style", "display: none");
   sectionMainTrivia.setAttribute("style", "display: none");
@@ -226,9 +250,17 @@ function showSection (sectionToShow) {
 
       case "highScores":
       sectionHighScores.setAttribute("style", "display: block");
+      displayHighScoreList ();
       break;
   }
 }
+
+// Handle when High Score link is clicked
+aHighScoreClick.addEventListener("click", function(event) {
+  event.preventDefault();
+  showSection ("highScores");
+});
+
 
 // Handle when answer is clicked
 ulAnswerList.addEventListener("click", function(event) {
@@ -242,6 +274,7 @@ ulAnswerList.addEventListener("click", function(event) {
       answerStatus.textContent = "Wrong!";
       showPenaltyBar (true);
       secondsElapsed += penaltyTime;
+      secondsRemaining = startingAmountOfTime - secondsElapsed; 
 
       showPenaltyTimerInterval = setInterval (function () {
         clearInterval (showPenaltyTimerInterval);
@@ -254,7 +287,7 @@ ulAnswerList.addEventListener("click", function(event) {
     showCorrectAnswerTimerInterval = setInterval (function () {
       clearInterval (showCorrectAnswerTimerInterval);
       showAnswerStatusArea (false);
-    }, 750)
+    }, 1250)
   }
 
   if (questionNumber < targetNumberOfQuestions) {
@@ -290,7 +323,11 @@ function loadHighScoreArrayFakeData () {
 }
 
 function loadHighScoreArray () {
-  highScoreArray = JSON.parse(localStorage.getItem("GDOG-US-State-Capitals-Quiz"));
+  var tempHighScore = JSON.parse(localStorage.getItem("GDOG-US-State-Capitals-Quiz"));
+  if (tempHighScore !== null) {
+    highScoreArray = tempHighScore;
+    sortHighScoreArray ();
+  }
 }
 
 function addHighScore () {
@@ -308,7 +345,6 @@ function addHighScore () {
 
   addHighScoreToArray (winnersName, secondsRemaining);
   showSection ("highScores");
-
 }
 
 function sortHighScoreArray () {
