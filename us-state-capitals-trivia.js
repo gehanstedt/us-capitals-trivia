@@ -3,7 +3,7 @@ const targetNumberOfQuestionsString = "seven";
 const defaultTargetNumberOfQuestions = 7;
 const defaultStartingAmountofTime = 60;
 var targetNumberOfQuestions;
-var startingAmountOfTime = defaultTargetNumberOfQuestions;
+var startingAmountOfTime = defaultStartingAmountofTime;
 
 var quizTimerInterval;
 var secondsElapsed;
