@@ -1,5 +1,6 @@
 # us-state-capitals-trivia
 GE Georgia Tech Bootcamp Homework #4 - US State Capitals Trivia
+Available at:  https://gehanstedt.github.io/us-state-capitals-trivia/
 
 Welcome to US State Capitals Trivia.  This has the following features:
 - Presents welcome screen showing how the game works
