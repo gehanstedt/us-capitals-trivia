@@ -332,19 +332,17 @@ function loadHighScoreArray () {
 
 function addHighScore () {
   var winnersName = "";
-  var firstTry = true;
 
-  while (winnersName === "") {
-    if (!firstTry) {
+  winnersName = inputWinnersName.value;
+
+  if (winnersName === "") {
       alert ("Be proud!  Please enter your name, or make something up.");
-    }
-
-    winnersName = inputWinnersName.value;
-    firstTry = false;
   }
 
-  addHighScoreToArray (winnersName, secondsRemaining);
-  showSection ("highScores");
+  else {
+    addHighScoreToArray (winnersName, secondsRemaining);
+    showSection ("highScores");
+  }
 }
 
 function sortHighScoreArray () {
@@ -812,9 +810,6 @@ function loadQuestionArray () {
     }
   ]  
 }
-
-
-
 
 
 
