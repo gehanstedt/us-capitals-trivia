@@ -14,5 +14,5 @@ Welcome to US State Capitals Trivia.  This has the following features:
 - If the user does not answer all 7 (and has an expired clock), the are unfortunately a loser and given the option to go back to the beginning or see the high scores.
 - There is an option at the beginning of the game to also see the high scores without playing the game (link in the upper left).
 
-Special thanks to Georgia Tech, Trilogy Educaton and John McSwain for the great class thus far.
+Special thanks to Georgia Tech, Trilogy Educaton and John McSwain for the great class thus far.  Thanks Cynthia for the grammar help!  ;-)
 
