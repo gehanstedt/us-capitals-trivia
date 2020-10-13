@@ -1,6 +1,7 @@
 const penaltyTime = 10;
 const targetNumberOfQuestionsString = "seven";
-var targetNumberOfQuestions = 7;
+const defaultTargetNumberOfQuestions = 7;
+var targetNumberOfQuestions;
 var startingAmountOfTime = 60;
 
 var quizTimerInterval;
@@ -10,6 +11,10 @@ var modeCounting;
 
 var questionArray = [];
 var buttonBegin = document.querySelector("#buttonBegin");
+var buttonGoBack1 = document.querySelector("#goBack1");
+var buttonGoBack2 = document.querySelector("#goBack2");
+var buttonHighScoreSubmit = document.querySelector("#highScoreSubmit");
+var inputWinnersName = document.querySelector("#winnersName");
 var sectionWelcome = document.querySelector("#welcome");
 var sectionMainTrivia = document.querySelector("#mainTrivia");
 var sectionResultsWinner = document.querySelector("#resultsWinner");
@@ -32,10 +37,11 @@ var myScoreBody = document.querySelector(".myScoreBody");
 var showCorrectAnswerTimerInterval;
 var showPenaltyTimerInterval;
 
-
 var currentCorrectAnswer;
 var randomQuestionSelection = [];
-var questionNumber = 0;
+var questionNumber;
+
+var highScoreArray = [];
 
 function buildRandomArray (numberOfElements, minimumValue, maximumValue) {
   var fullArray = [];
@@ -263,16 +269,109 @@ ulAnswerList.addEventListener("click", function(event) {
   }
 });
 
+// This is no longer referenced.  It was used to load some fake highscore data
+function loadHighScoreArrayFakeData () {
+  highScoreArray = [
+    {
+      "score": 25,
+      "winnersName": "NN25"
+    },
+  
+    {
+      "score": 40,
+      "winnersName": "NN40"
+    },
+  
+    {
+      "score": 2,
+      "winnersName": "NN02"
+    },
+  ];
+}
+
+function loadHighScoreArray () {
+  highScoreArray = JSON.parse(localStorage.getItem("GDOG-US-State-Capitals-Quiz"));
+}
+
+function addHighScore () {
+  var winnersName = "";
+  var firstTry = true;
+
+  while (winnersName === "") {
+    if (!firstTry) {
+      alert ("Be proud!  Please enter your name, or make something up.");
+    }
+
+    winnersName = inputWinnersName.value;
+    firstTry = false;
+  }
+
+  addHighScoreToArray (winnersName, secondsRemaining);
+  showSection ("highScores");
+
+}
+
+function sortHighScoreArray () {
+  highScoreArray = highScoreArray.sort((c1, c2) => (c1.score < c2.score) ? 1 : (c1.score > c2.score) ? -1 : 0);
+}
+
+function addHighScoreToArray (winnersName, score) {
+  var count = 0;
+  var stopPoint = false;
+  var newEntry = {
+    "score": score,
+    "winnersName": winnersName
+  }
+
+  highScoreArray.push (newEntry);
+  sortHighScoreArray ();
+  localStorage.setItem("GDOG-US-State-Capitals-Quiz", JSON.stringify(highScoreArray));
+}
+
+/*
+function addHighScoreToArray (winnersName, score) {
+  var count = 0;
+  var stopPoint = false;
+
+  if (highScoreArray.length == 0) {
+    stopPoint = true;
+  }
+
+  while (!stopPoint) {
+    if (highScoreArray [count].score >= score) {
+      count ++
+    }
+
+    else {
+      stopPoint = true;
+    }
+
+    if (count === highScoreArray.length - 1) {
+      stopPoint = true;
+    }
+  }
+
+  highScoreArray.splice
+}
+*/
+
+function resetGame () {
+  showSection ("welcome");
+  updateMessage ();
+  showAnswerStatusArea (false);
+  modeCounting = false;
+  questionNumber = 0;
+  targetNumberOfQuestions = defaultTargetNumberOfQuestions;
+}
+
 loadQuestionArray ();
-showSection ("welcome");
-updateMessage ();
-showAnswerStatusArea (false);
-modeCounting = false;
+loadHighScoreArray ();
+resetGame ();
 
 buttonBegin.addEventListener("click", beginQuiz);
-
-
-
+buttonHighScoreSubmit.addEventListener("click", addHighScore);
+buttonGoBack1.addEventListener("click", resetGame);
+buttonGoBack2.addEventListener("click", resetGame);
 
 function loadQuestionArray () {
   questionArray = [

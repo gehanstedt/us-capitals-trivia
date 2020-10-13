@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>G Dog Enterprises</title>
+  <title>US State Capitals Trivia</title>
   <!-- Reference stylesheets from bootstrap, Google for Cinzel font, local override stylesheet local-style.css -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
@@ -13,7 +13,7 @@
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light ghHeader">
     <span id="companyName">G Dog Enterprises</span>
-    <span id="applicationName">US Capitals Trivia</span>
+    <span id="applicationName">US State Capitals Trivia</span>
   </nav>
 
   <header class="headerBar1">
@@ -60,7 +60,7 @@
         Congratulations!  Your final score was <span class="myScoreBody">XX</span>.
       </p>
       <p class="resultsWinner">
-        Your initials:  <input type="text" name="winnersInitials"> <button class="btn btn-primary initialSubmitButton">Submit</button>
+        Your name:  <input type="text" name="winnersName" id="winnersName"> <button class="btn btn-primary initialSubmitButton" id="highScoreSubmit">Submit</button>
       </p>
     </section>
     <section class="col-sm-8 col-md-7 col-xl-7" id="resultsLoser">
@@ -70,7 +70,7 @@
         I suggest a bit more Google research?  
       </p>
       <p>
-        <button class="btn btn-primary goToBeginning">Go Back</button>
+        <button class="btn btn-primary goToBeginning" id="goBack1">Go Back</button>
         <button class="btn btn-primary viewHighScores">View High Scores</button>
       </p>
     </section>
@@ -82,8 +82,7 @@
         </li>
       </ul>
       <p>
-        <button class="btn btn-primary goToBeginning">Go Back</button>
-        <button class="btn btn-primary viewHighScores">View High Scores</button>
+        <button class="btn btn-primary goToBeginning" id="goBack2">Go Back</button>
       </p>
     </section>
 
