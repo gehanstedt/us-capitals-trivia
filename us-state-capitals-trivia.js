@@ -425,6 +425,7 @@ loadQuestionArray ();
 loadHighScoreArray ();
 resetGame ();
 
+// Button listeners
 buttonBegin.addEventListener("click", readyQuizShort);
 buttonBegin50.addEventListener("click", readyQuiz50);
 buttonHighScoreSubmit.addEventListener("click", addHighScore);
@@ -433,6 +434,9 @@ buttonGoBack2.addEventListener("click", resetGame);
 buttonviewHighScores.addEventListener("click", showHighScores);
 
 // Mega function to load all of the questions for all 50 US states
+// Correct answers sourced from Wikipedia - which is NEVER wrong
+// Wrong answers based on most populous cities in that state
+// (besides the actual capital)
 function loadQuestionArray () {
   questionArray = [
     {
