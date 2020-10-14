@@ -1,7 +1,9 @@
 const penaltyTime = 10;
 const targetNumberOfQuestionsString = "seven";
 const defaultTargetNumberOfQuestions = 7;
+const defaultTargetNumberOfQuestionsAll50 = 50;
 const defaultStartingAmountofTime = 60;
+const defaultStartingAmountofTimeAll50 = 400;
 var targetNumberOfQuestions;
 var startingAmountOfTime = defaultStartingAmountofTime;
 
@@ -12,6 +14,7 @@ var modeCounting;
 
 var questionArray = [];
 var buttonBegin = document.querySelector("#buttonBegin");
+var buttonBegin50 = document.querySelector("#buttonBegin50");
 var buttonGoBack1 = document.querySelector("#goBack1");
 var buttonGoBack2 = document.querySelector("#goBack2");
 var buttonHighScoreSubmit = document.querySelector("#highScoreSubmit");
@@ -47,6 +50,12 @@ var questionNumber;
 
 var highScoreArray = [];
 
+
+// buildRandomArray is used to build an array of random numbers, based on:
+// numberOfElements - number of elements needed
+// minimumValue - what should the smallest value be
+// maximumValue - what should the largest value be
+// This is used for randomizing the question order and randomizing the answer order
 function buildRandomArray (numberOfElements, minimumValue, maximumValue) {
   var fullArray = [];
   var randomArray = [];
@@ -65,12 +74,14 @@ function buildRandomArray (numberOfElements, minimumValue, maximumValue) {
   return randomArray;
 }
 
+// clearUlDisplay is a generic function to clear nodes from ULs.  It is used for clearing the high score list and the question answers
 function clearUlDisplay (myUl) {
   while (myUl.hasChildNodes ()) {
     myUl.removeChild(myUl.childNodes[0]);           // Remove <ul>'s first child node (index 0)
   }
 }
 
+// displayHighScoreList clears the current scores, walks through the highScoreArray and display the current high scores 
 function displayHighScoreList () {
   clearUlDisplay (ulHighScoreList);
   var count = 0;
@@ -86,14 +97,11 @@ function displayHighScoreList () {
   }
 }
 
-/*
-function clearHighScoreDispaly () {
-  while (ulHighScoreList.hasChildNodes ()) {
-    ulHighScoreList.removeChild(ulAnswerList.childNodes[0]);           // Remove <ul>'s first child node (index 0)
-  }
-}
-*/
-
+// One of the work horse functions
+// showQuestion does the work to show the question and the associated answers
+// The answers are randomized each time, so if you run multiple times, the answer order
+// will potentially be different each time.  
+// The correct answer is stored in currentCorrectAnswer for future checking when the user clicks an answer
 function showQuestion () {
   var questionString;
   var questionPosition = randomQuestionSelection.splice (0, 1)[0];
@@ -154,6 +162,7 @@ function showQuestion () {
   console.log (randomAnswerArray);
 }
 
+// Updates the HTML message on the main screen with some of the defaults defined by constants above
 function updateMessage () {
   spanPenaltyLength.textContent = penaltyTime;
   spanNumberQuestions.textContent = targetNumberOfQuestionsString;
@@ -162,6 +171,21 @@ function updateMessage () {
   penaltyTimeID.textContent = penaltyTime;
 }
 
+// Ready quiz for 50 questions, set timer, and then begin
+function readyQuiz50 () {
+  targetNumberOfQuestions = defaultTargetNumberOfQuestionsAll50;
+  startingAmountOfTime = defaultStartingAmountofTimeAll50;
+  beginQuiz ();
+}
+
+// Ready for shorter number of questions and time, then begin
+function readyQuizShort () {
+  targetNumberOfQuestions = defaultTargetNumberOfQuestions;
+  startingAmountOfTime = defaultStartingAmountofTime;
+  beginQuiz ();
+}
+
+// Begins the quiz.  This calls main functions showSection, showQuestion and startTimer which do the real work
 function beginQuiz () {
   showSection ("mainTrivia");
   randomQuestionSelection = buildRandomArray (targetNumberOfQuestions, 0, questionArray.length - 1);
@@ -171,6 +195,7 @@ function beginQuiz () {
   startTimer ();
 }
 
+// Starts the quiz timer and handles what happens when it expires
 function startTimer () {
   if (!modeCounting) {
     quizTimerInterval = setInterval (function () {
@@ -189,6 +214,7 @@ function startTimer () {
   modeCounting = true;
 }
 
+// Shows the timerBar in teh upper right or not
 function showTimer (showIt) {
   if (showIt) {
     timerBar.setAttribute("style", "visibility: visible");
@@ -199,6 +225,7 @@ function showTimer (showIt) {
   }
 }
 
+// Shows the penalty bar in the upper right or not
 function showPenaltyBar (showIt) {
   if (showIt) {
     penaltyBar.setAttribute("style", "visibility: visible");
@@ -209,6 +236,7 @@ function showPenaltyBar (showIt) {
   }
 }
 
+// Shows the answer status area or not
 function showAnswerStatusArea (showIt) {
   if (showIt) {
     answerStatusArea.setAttribute("style", "visibility: visible");
@@ -219,6 +247,8 @@ function showAnswerStatusArea (showIt) {
   }
 }
 
+// Function showSection handles display and hiding the main pages of HTML based on what mode
+// the quiz is running in .  Sections are:  welcome, mainTrivia, resultsWinner, resultsLoser, highScores
 function showSection (sectionToShow) {
   sectionWelcome.setAttribute("style", "display: none");
   sectionMainTrivia.setAttribute("style", "display: none");
@@ -263,6 +293,7 @@ aHighScoreClick.addEventListener("click", function(event) {
   showSection ("highScores");
 });
 
+// Used to show the highScore screen
 function showHighScores () {
   showSection ("highScores");
 }
@@ -295,15 +326,23 @@ ulAnswerList.addEventListener("click", function(event) {
     }, 1250)
   }
 
+  // If time left and have not shown all questions
   if (questionNumber < targetNumberOfQuestions) {
     showQuestion ();  
   }
 
-  else {
+  // If time left and have shown all questions - user is a "winner"
+  else if (secondsRemaining >= 0) {
     clearInterval (quizTimerInterval);
     showSection ("resultsWinner");
     myScoreHeading.textContent = secondsRemaining;
     myScoreBody.textContent = secondsRemaining;
+  }
+
+  // No time left - user is a "loser"
+  else {
+    clearInterval (quizTimerInterval);
+    showSection ("resultsLoser");
   }
 });
 
@@ -327,6 +366,7 @@ function loadHighScoreArrayFakeData () {
   ];
 }
 
+// loadHighScoreArray loads the high scores from a previous session from localStorage
 function loadHighScoreArray () {
   var tempHighScore = JSON.parse(localStorage.getItem("GDOG-US-State-Capitals-Quiz"));
   if (tempHighScore !== null) {
@@ -335,6 +375,8 @@ function loadHighScoreArray () {
   }
 }
 
+// addHighScore gets input from the user for their score.  If they enter something, it then adds it 
+// to the high score array and then displays the high scores.
 function addHighScore () {
   var winnersName = "";
 
@@ -350,13 +392,13 @@ function addHighScore () {
   }
 }
 
+// sortHighScoreArray is a simple function to sort the high score array by the score descending
 function sortHighScoreArray () {
   highScoreArray = highScoreArray.sort((c1, c2) => (c1.score < c2.score) ? 1 : (c1.score > c2.score) ? -1 : 0);
 }
 
+// addHighScoreToArray adds the new high score to the high score array and then writes it back to local storage
 function addHighScoreToArray (winnersName, score) {
-  var count = 0;
-  var stopPoint = false;
   var newEntry = {
     "score": score,
     "winnersName": winnersName
@@ -367,52 +409,30 @@ function addHighScoreToArray (winnersName, score) {
   localStorage.setItem("GDOG-US-State-Capitals-Quiz", JSON.stringify(highScoreArray));
 }
 
-/*
-function addHighScoreToArray (winnersName, score) {
-  var count = 0;
-  var stopPoint = false;
-
-  if (highScoreArray.length == 0) {
-    stopPoint = true;
-  }
-
-  while (!stopPoint) {
-    if (highScoreArray [count].score >= score) {
-      count ++
-    }
-
-    else {
-      stopPoint = true;
-    }
-
-    if (count === highScoreArray.length - 1) {
-      stopPoint = true;
-    }
-  }
-
-  highScoreArray.splice
-}
-*/
-
+// Reset game prepares the game for a new run
 function resetGame () {
   showSection ("welcome");
   updateMessage ();
   showAnswerStatusArea (false);
   modeCounting = false;
   questionNumber = 0;
-  targetNumberOfQuestions = defaultTargetNumberOfQuestions;
+//  targetNumberOfQuestions = defaultTargetNumberOfQuestions;
 }
 
+// To intialize the game, we load the question array, load high scores
+// and reset game to defaults.  Then we wait for a click to actually begin.
 loadQuestionArray ();
 loadHighScoreArray ();
 resetGame ();
 
-buttonBegin.addEventListener("click", beginQuiz);
+buttonBegin.addEventListener("click", readyQuizShort);
+buttonBegin50.addEventListener("click", readyQuiz50);
 buttonHighScoreSubmit.addEventListener("click", addHighScore);
 buttonGoBack1.addEventListener("click", resetGame);
 buttonGoBack2.addEventListener("click", resetGame);
 buttonviewHighScores.addEventListener("click", showHighScores);
 
+// Mega function to load all of the questions for all 50 US states
 function loadQuestionArray () {
   questionArray = [
     {
